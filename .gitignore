@@ -1,0 +1,8 @@
+# Ignore Emacs backup files.
+*.*~
+
+# Ignore Python cache directory.
+__pycache__/
+
+# Ignore...
+dejavu10x10_gs_tc.png
