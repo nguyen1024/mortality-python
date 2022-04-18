@@ -14,12 +14,6 @@ from tcod.context import Context
 from tcod.console import Console
 
 #
-from actions import EscapeAction
-
-#
-from actions import MovementAction
-
-#
 from entity import Entity
 
 #
@@ -50,16 +44,7 @@ class Engine:
             if action is None:
                 # Skip over the remaining code.
                 continue
-            # Else if there is a movement action:
-            elif isinstance(action, MovementAction):
-                # If the destination tile is walkable:
-                if self.game_map.tiles["walkable"][self.player.x + action.dx, self.player.y + action.dy]:
-                    # Move the player.
-                    self.player.move(dx=action.dx, dy=action.dy)
-            # Else if there is an escape action:
-            elif isinstance(action, EscapeAction):
-                # Exit the program.
-                raise SystemExit()
+            action.perform(self, self.player)
 
     # Create a render function.
     def render(self, console: Console, context: Context) -> None:
