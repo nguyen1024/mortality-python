@@ -23,15 +23,20 @@ from actions import MovementAction
 from entity import Entity
 
 #
+from game_map import GameMap
+
+#
 from input_handlers import EventHandler
 
 class Engine:
     # Create initialiser function.
-    def __init__(self, entities: Set[Entity], event_handler: EventHandler, player: Entity):
+    def __init__(self, entities: Set[Entity], event_handler: EventHandler, game_map: GameMap, player: Entity):
         # Store entities.
         self.entities = entities
         # Store event handler.
         self.event_handler = event_handler
+        #
+        self.game_map = game_map
         # Store player.
         self.player = player
 
@@ -47,8 +52,10 @@ class Engine:
                 continue
             # Else if there is a movement action:
             elif isinstance(action, MovementAction):
-                # Move the player.
-                self.player.move(dx=action.dx, dy=action.dy)
+                # If the destination tile is walkable:
+                if self.game_map.tiles["walkable"][self.player.x + action.dx, self.player.y + action.dy]:
+                    # Move the player.
+                    self.player.move(dx=action.dx, dy=action.dy)
             # Else if there is an escape action:
             elif isinstance(action, EscapeAction):
                 # Exit the program.
@@ -56,6 +63,8 @@ class Engine:
 
     # Create a render function.
     def render(self, console: Console, context: Context) -> None:
+        #
+        self.game_map.render(console=console)
         # For each entity:
         for entity in self.entities:
             # Print entity in the back buffer.
