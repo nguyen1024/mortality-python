@@ -15,10 +15,8 @@ class GameMap:
         self.width = width
         # 
         self.height = height
-        # Create a two dimensional array filled with floor tiles.
-        self.tiles = numpy.full((width, height), fill_value=tile_types.floor, order="F")
-        # Replace a few floor tiles with wall tiles.
-        self.tiles[30:33, 22] = tile_types.wall
+        # Create a two dimensional array filled with wall tiles.
+        self.tiles = numpy.full((width, height), fill_value=tile_types.wall, order="F")
 
     #
     def in_bounds(self, x: int, y: int) -> bool:

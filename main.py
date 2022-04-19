@@ -8,10 +8,10 @@ from engine import Engine
 from entity import Entity
 
 #
-from game_map import GameMap
+from input_handlers import EventHandler
 
 #
-from input_handlers import EventHandler
+from proc_gen import generate_dungeon
 
 #
 def main():
@@ -34,7 +34,7 @@ def main():
         # Put entities into a set.
         entities = {npc, player}
         # Create a game map.
-        game_map = GameMap(map_width, map_height)
+        game_map = generate_dungeon(map_width, map_height)
         # Create an engine.
         engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
         # Create a screen.
