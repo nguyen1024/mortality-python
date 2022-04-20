@@ -11,7 +11,7 @@ from entity import Entity
 from input_handlers import EventHandler
 
 #
-from proc_gen import generate_dungeon
+from proc_gen import generate_dungeon2
 
 #
 def main():
@@ -23,6 +23,12 @@ def main():
         map_width = 80
         # Set map height.
         map_height = 50
+        # Set the maximum room size.
+        room_max_size = 10
+        # Set the minimum room size.
+        room_min_size = 6
+        # Set the maximum number of room.
+        max_rooms = 30
         # Set font.
         tileset = tcod.tileset.load_tilesheet("dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD)
         # Create an event handler object.
@@ -34,7 +40,13 @@ def main():
         # Put entities into a set.
         entities = {npc, player}
         # Create a game map.
-        game_map = generate_dungeon(map_width, map_height)
+        game_map = generate_dungeon2(
+                max_rooms=max_rooms,
+                room_min_size=room_min_size,
+                room_max_size=room_max_size,
+                map_width=map_width,
+                map_height=map_height,
+                player=player)
         # Create an engine.
         engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
         # Create a screen.
