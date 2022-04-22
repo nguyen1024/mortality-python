@@ -14,6 +14,9 @@ from tcod.context import Context
 from tcod.console import Console
 
 #
+from tcod.map import compute_fov
+
+#
 from entity import Entity
 
 #
@@ -33,6 +36,8 @@ class Engine:
         self.game_map = game_map
         # Store player.
         self.player = player
+        # Call function to update the field of view.
+        self.update_fov()
 
     # Create an event handler.
     def handle_events(self, events: Iterable[Any]) -> None:
@@ -44,7 +49,26 @@ class Engine:
             if action is None:
                 # Skip over the remaining code.
                 continue
+            #
             action.perform(self, self.player)
+            # Update the field of view.
+            self.update_fov()
+
+    #
+    def update_fov(self) -> None:
+        """
+        Recompute the visible area based on the players point of view.
+        """
+        #
+        self.game_map.visible[:] = compute_fov(
+            # Pass transparent tiles.
+            self.game_map.tiles["transparent"],
+            # Pass player position.
+            (self.player.x, self.player.y),
+            # Pass how far the player can see.
+            radius=8)
+        # If a tile is "visible" then add it to "explored".
+        self.game_map.explored |= self.game_map.visible
 
     # Create a render function.
     def render(self, console: Console, context: Context) -> None:
@@ -52,8 +76,10 @@ class Engine:
         self.game_map.render(console=console)
         # For each entity:
         for entity in self.entities:
-            # Print entity in the back buffer.
-            console.print(entity.x, entity.y, entity.char, fg=entity.color)
+            # If the entity is in the field of view:
+            if self.game_map.visible[entity.x, entity.y]:
+                # Print the entity.
+                console.print(entity.x, entity.y, entity.char, fg=entity.color)
         # Present the back buffer.
         context.present(console)
         # Clear the back buffer.
