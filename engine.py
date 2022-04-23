@@ -1,7 +1,4 @@
 #
-from typing import Set
-
-#
 from typing import Iterable
 
 #
@@ -27,9 +24,7 @@ from input_handlers import EventHandler
 
 class Engine:
     # Create initialiser function.
-    def __init__(self, entities: Set[Entity], event_handler: EventHandler, game_map: GameMap, player: Entity):
-        # Store entities.
-        self.entities = entities
+    def __init__(self, event_handler: EventHandler, game_map: GameMap, player: Entity):
         # Store event handler.
         self.event_handler = event_handler
         #
@@ -74,12 +69,6 @@ class Engine:
     def render(self, console: Console, context: Context) -> None:
         #
         self.game_map.render(console=console)
-        # For each entity:
-        for entity in self.entities:
-            # If the entity is in the field of view:
-            if self.game_map.visible[entity.x, entity.y]:
-                # Print the entity.
-                console.print(entity.x, entity.y, entity.char, fg=entity.color)
         # Present the back buffer.
         context.present(console)
         # Clear the back buffer.

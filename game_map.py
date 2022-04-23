@@ -1,4 +1,13 @@
 #
+from __future__ import annotations
+
+#
+from typing import Iterable
+
+#
+from typing import TYPE_CHECKING
+
+#
 import numpy
 
 #
@@ -7,14 +16,28 @@ from tcod.console import Console
 #
 import tile_types
 
+if TYPE_CHECKING:
+    from entity import Entity
+
 # Create class GameMap.
 class GameMap:
     # Create an initialisation function.
-    def __init__(self, width: int, height: int):
+    def __init__(
+            #
+            self,
+            #
+            width: int,
+            #
+            height: int,
+            #
+            entities: Iterable[Entity] = ()):
         # Store the width.
         self.width = width
-        # 
+        # Store map "height".
         self.height = height
+        # Store entities.
+        self.entities = set(entities)
+        
         # Create a two dimensional array filled with wall tiles.
         self.tiles = numpy.full((width, height), fill_value=tile_types.wall, order="F")
 
@@ -45,3 +68,10 @@ class GameMap:
             choicelist=[self.tiles["light"], self.tiles["dark"]],
             #
             default=tile_types.SHROUD)
+        # For each entity:
+        for entity in self.entities:
+            # If the entity is in the field of view:
+            if self.visible[entity.x, entity.y]:
+                # Print the entity.
+                console.print(entity.x, entity.y, entity.char, fg=entity.color)
+
