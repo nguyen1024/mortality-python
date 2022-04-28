@@ -23,6 +23,9 @@ from game_map import GameMap
 import tcod
 
 #
+import entity_factories
+
+#
 import tile_types
 
 #
@@ -70,6 +73,32 @@ class RectangularRoom:
             #
             and self.y2 >= other.y1)
 
+#
+def place_entities(
+        #
+        room: RectangularRoom,
+        #
+        dungeon: GameMap,
+        #
+        maximum_monsters: int) -> None:
+    # Set the number of monsters.
+    number_of_monsters = random.randint(0, maximum_monsters)
+    # For each monster:
+    for i in range(number_of_monsters):
+        # Set position x.
+        x = random.randint(room.x1 + 1, room.x2 - 1)
+        # Set position y.
+        y = random.randint(room.y1 + 1, room.y2 - 1)
+        # If there is not an entity at the specified position:
+        if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
+            # If less than 80%:
+            if random.random() < 0.8:
+                # Plance an orc.
+                entity_factories.orc.spawn(dungeon, x, y)
+            else:
+                # Place a troll.
+                entity_factories.troll.spawn(dungeon, x, y)
+    
 #
 def tunnel_between(start: Tuple[int, int],
                    end: Tuple[int, int]) -> Iterator[Tuple[int, int]]:
@@ -130,6 +159,8 @@ def generate_dungeon2(
         map_width: int,
         # Map height.
         map_height: int,
+        #
+        max_monsters_per_room: int,
         # Player.
         player: Entity) -> GameMap:
     """Generate a new dungeon map."""
@@ -165,6 +196,8 @@ def generate_dungeon2(
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 # Carve out the position.
                 dungeon.tiles[x, y] = tile_types.floor
+        #
+        place_entities(new_room, dungeon, max_monsters_per_room)
         # Append the new room to the list.
         rooms.append(new_room)
     #

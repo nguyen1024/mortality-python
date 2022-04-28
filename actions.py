@@ -30,7 +30,7 @@ class EscapeAction(Action):
                 raise SystemExit()
 
 #
-class MovementAction(Action):
+class ActionWithDirection(Action):
         #
         def __init__(self, dx: int, dy: int):
                 #
@@ -40,6 +40,30 @@ class MovementAction(Action):
                 #
                 self.dy = dy
 
+        #
+        def perform(self, engine: Engine, entity: Entity) -> None:
+                #
+                raise NotImplementedError()
+
+#
+class MeleeAction(ActionWithDirection):
+        #
+        def perform(self, engine: Engine, entity: Entity) -> None:
+                # Calculate destination x.
+                dest_x = entity.x + self.dx
+                # Calculate destination y.
+                dest_y = entity.y + self.dy
+                # Get the blocking entity at the specified location
+                target = engine.game_map.get_blocking_entity_at_location(dest_x, dest_y)
+                # If there is no blocking entity:
+                if not target:
+                        # Return early.
+                        return
+                # Print diagnostic.
+                print(f"You kick the {target.name}, much to its annoynance!")
+
+#
+class MovementAction(ActionWithDirection):
         #
         def perform(self, engine: Egine, entity: Entity) -> None:
                 # Calculate destination x.
@@ -54,5 +78,26 @@ class MovementAction(Action):
                 if not engine.game_map.tiles["walkable"][dest_x, dest_y]:
                         # Return early.
                         return
+                # If the destination has a blocking entity:
+                if engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
+                        # Return early.
+                        return
                 # Move entity.
                 entity.move(self.dx, self.dy)
+
+#
+class BumpAction(ActionWithDirection):
+        #
+        def perform(self, engine: Engine, entity: Entity) -> None:
+                # Calculate x destination.
+                dest_x = entity.x + self.dx
+                # Calculate y destination.
+                dest_y = entity.y + self.dy
+                # If there is a blocking entity at the specified location:
+                if engine.game_map.get_blocking_entity_at_location(dest_x, dest_y):
+                        # Hit the entity at the specified location.
+                        return MeleeAction(self.dx, self.dy).perform(engine, entity)
+                # Else:
+                else:
+                        # Move into the specified location.
+                        return MovementAction(self.dx, self.dy).perform(engine, entity)

@@ -34,6 +34,13 @@ class Engine:
         # Call function to update the field of view.
         self.update_fov()
 
+    #
+    def handle_enemy_turns(self) -> None:
+        # For each entity except the player:
+        for entity in self.game_map.entities - {self.player}:
+            #
+            print(f"The {entity.name} wonders when it will get to take a real turn.")
+
     # Create an event handler.
     def handle_events(self, events: Iterable[Any]) -> None:
         # For each event:
@@ -46,6 +53,8 @@ class Engine:
                 continue
             #
             action.perform(self, self.player)
+            # Let each non-player character have a turn.
+            self.handle_enemy_turns()
             # Update the field of view.
             self.update_fov()
 

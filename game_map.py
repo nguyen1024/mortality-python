@@ -5,6 +5,9 @@ from __future__ import annotations
 from typing import Iterable
 
 #
+from typing import Optional
+
+#
 from typing import TYPE_CHECKING
 
 #
@@ -46,7 +49,24 @@ class GameMap:
 
         # Create an array to store the tiles that the player has seen before.
         self.explored = numpy.full((width, height), fill_value=False, order="F")
-        
+
+    #
+    def get_blocking_entity_at_location(
+            #
+            self,
+            #
+            location_x: int,
+            #
+            location_y: int) -> Optional[Entity]:
+        # For each entity:
+        for entity in self.entities:
+            # If the entity is in the specified position and the entity blocks movement:
+            if entity.blocks_movement and entity.x == location_x and entity.y == location_y:
+                # Return the entity.
+                return entity
+        # Return nothing.
+        return None       
+            
     #
     def in_bounds(self, x: int, y: int) -> bool:
         """Return true if x and y are within the bounds of the map."""

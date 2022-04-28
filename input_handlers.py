@@ -8,10 +8,10 @@ import tcod.event
 from actions import Action
 
 #
-from actions import EscapeAction
+from actions import BumpAction
 
 #
-from actions import MovementAction
+from actions import EscapeAction
 
 # Sub-class EventDispatched.
 # Create class EventHandler.
@@ -31,19 +31,19 @@ class EventHandler(tcod.event.EventDispatch[Action]):
                 # If key up:
                 if key == tcod.event.K_UP:
                         # Create a movement action.
-                        action = MovementAction(dx=0, dy=-1)
+                        action = BumpAction(dx=0, dy=-1)
                 # Else if key down:
                 elif key == tcod.event.K_DOWN:
                         # Create movement action.
-                        action = MovementAction(dx=0, dy=1)
+                        action = BumpAction(dx=0, dy=1)
                 # Else if key left:
                 elif key == tcod.event.K_LEFT:
                         # Create movement action.
-                        action = MovementAction(dx=-1, dy=0)
+                        action = BumpAction(dx=-1, dy=0)
                 # Else if key right:
                 elif key == tcod.event.K_RIGHT:
                         # Create movement action.
-                        action = MovementAction(dx=1, dy=0)
+                        action = BumpAction(dx=1, dy=0)
                 # Else if key escape:
                 elif key == tcod.event.K_ESCAPE:
                         # Create escape action.

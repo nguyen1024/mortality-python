@@ -1,3 +1,6 @@
+#
+import copy
+
 # Import The Chronicles of Doryen Library.
 import tcod
 
@@ -5,7 +8,7 @@ import tcod
 from engine import Engine
 
 #
-from entity import Entity
+import entity_factories
 
 #
 from input_handlers import EventHandler
@@ -29,12 +32,15 @@ def main():
         room_min_size = 6
         # Set the maximum number of room.
         max_rooms = 30
+        # Set the maximum number of monsters per room.
+        max_monsters_per_room = 2
         # Set font.
         tileset = tcod.tileset.load_tilesheet("dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD)
         # Create an event handler object.
         event_handler = EventHandler()
-        # Create a player entity.
-        player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255, 255, 255))
+        # Create a copy of a player entity.
+        player = copy.deepcopy(entity_factories.player)
+        
         # Create a game map.
         game_map = generate_dungeon2(
                 max_rooms=max_rooms,
@@ -42,6 +48,7 @@ def main():
                 room_max_size=room_max_size,
                 map_width=map_width,
                 map_height=map_height,
+                max_monsters_per_room=max_monsters_per_room,
                 player=player)
         # Create an engine.
         engine = Engine(event_handler=event_handler, game_map=game_map, player=player)
